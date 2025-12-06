@@ -1,0 +1,18 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Backend virtual env
+backend/__pycache__/
+backend/.venv/
+backend/gmail-cleaner-env/
+*.pyc
+
+# NEVER commit secrets
+backend/.env
+backend/credentials.json
+backend/token.json
+
+# MacOS
+.DS_Store
