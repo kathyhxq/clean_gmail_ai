@@ -1,0 +1,5 @@
+{
+  "name": "CleanMail AI",
+  "description": "An intelligent email inbox cleaner that uses Gemini to generate complex Gmail filters and simulates cleaning based on natural language commands.",
+  "requestFramePermissions": []
+}
