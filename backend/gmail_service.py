@@ -1,4 +1,6 @@
 import os
+import json
+from typing import List, Dict
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -9,22 +11,50 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
 
 def get_gmail_service():
+    """
+    Authenticate and return a Gmail API service instance.
+    Priority:
+    1.If GMAIL_TOKEN_JSON env var is set, use it.
+    2.If token.json file exists, use it.
+    3.Otherwise, go through OAuth flow.
+    """
     creds = None
+    token_json_env = os.getenv("GMAIL_TOKEN_JSON")
+    credentials_json_env = os.getenv("GMAIL_CREDENTIALS_JSON")
 
-    # Load saved token if available
-    if os.path.exists(TOKEN_FILE):
+    if token_json_env:
+        creds = Credentials.from_authorized_user_info(json.loads(token_json_env), SCOPES)
+    elif os.path.exists(TOKEN_FILE):
         creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
-
     # If no valid credentials, go through OAuth flow
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            if not credentials_json_env:
+                raise Exception("GMAIL_CREDENTIALS_JSON environment variable is not set.")
+            flow = InstalledAppFlow.from_client_config(
+                json.loads(credentials_json_env), SCOPES
+            )
             creds = flow.run_local_server(port=8080)
         # Save the token for next time
         with open(TOKEN_FILE, "w") as f:
-            f.write(creds.to_json())
+            f.write(creds.to_json())    
+
+    # # Load saved token if available
+    # if os.path.exists(TOKEN_FILE):
+    #     creds = Credentials.from_authorized_user_file(TOKEN_FILE, SCOPES)
+
+    # # If no valid credentials, go through OAuth flow
+    # if not creds or not creds.valid:
+    #     if creds and creds.expired and creds.refresh_token:
+    #         creds.refresh(Request())
+    #     else:
+    #         flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+    #         creds = flow.run_local_server(port=8080)
+    #     # Save the token for next time
+    #     with open(TOKEN_FILE, "w") as f:
+    #         f.write(creds.to_json())
 
     service = build("gmail", "v1", credentials=creds)
     return service
@@ -36,7 +66,7 @@ def list_emails(query: str = ""):
     """
     service = get_gmail_service()
     results = service.users().messages().list(
-        userId="me", q=query, maxResults=50
+        userId="me", q=query, maxResults=100
     ).execute()
     messages = results.get("messages", [])
 
