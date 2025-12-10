@@ -3,6 +3,7 @@ import { X, Sparkles, Trash2, Copy, Check, AlertCircle, ArrowRight, ExternalLink
 import { Email, GeminiFilterResponse } from '../types';
 import { analyzeFilterIntent, applyLocalFilter } from '../services/gemini';
 import { EmailList } from './EmailList';
+import { BACKEND_URL } from '../config';
 
 interface SmartCleanerProps {
   onClose: () => void;
@@ -49,7 +50,7 @@ export const SmartCleaner: React.FC<SmartCleanerProps> = ({ onClose, allEmails, 
     setGmailResultMessage(null);
 
     try {
-      const res = await fetch('http://localhost:8000/clean', {
+      const res = await fetch(`${BACKEND_URL}/clean`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userPrompt: prompt }),
@@ -66,7 +67,7 @@ export const SmartCleaner: React.FC<SmartCleanerProps> = ({ onClose, allEmails, 
       }
     } catch (err) {
       console.error('Error calling backend /clean', err);
-      setGmailResultMessage('Failed to reach backend. Is the Python server running on http://localhost:8000?');
+      setGmailResultMessage('Now the backend is ${BACKEND_URL} and Failed to reach backend. Is the Python server running on http://localhost:8000?');
     } finally {
       setIsRunningOnGmail(false);
     }
