@@ -6,6 +6,7 @@ import { Stats } from './components/Stats';
 import { Email, ViewMode } from './types';
 import { generateMockEmails } from './utils/mockData';
 import { Menu, Search, Filter, RefreshCw } from 'lucide-react';
+import { BACKEND_URL } from './config';
 
 const App: React.FC = () => {
   const [emails, setEmails] = useState<Email[]>([]);
@@ -16,7 +17,7 @@ const App: React.FC = () => {
 
   // Initialize mock data
   useEffect(() => {
-    fetch("http://localhost:8000/emails")
+    fetch(`${BACKEND_URL}/emails`)
       .then(res => res.json())
       .then(data => setEmails(data));
   }, []);

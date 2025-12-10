@@ -67,7 +67,7 @@ export const SmartCleaner: React.FC<SmartCleanerProps> = ({ onClose, allEmails, 
       }
     } catch (err) {
       console.error('Error calling backend /clean', err);
-      setGmailResultMessage('Now the backend is ${BACKEND_URL} and Failed to reach backend. Is the Python server running on http://localhost:8000?');
+      setGmailResultMessage(`Failed to reach backend at ${BACKEND_URL}, Is it running?`);
     } finally {
       setIsRunningOnGmail(false);
     }
