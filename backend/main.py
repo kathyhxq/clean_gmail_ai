@@ -4,6 +4,8 @@ import json
 from gmail_service import list_emails, delete_email, archive_email
 from ai_service import analyze_filter_intent
 from fastapi import HTTPException
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI()
 
@@ -54,7 +56,6 @@ async def ai_clean(body: dict):
         delete_email(email["id"])
         cleaned_ids.append(email["id"])
        
-
     return {
         "userPrompt": user_prompt,
         "gmailQuery": gmail_query,

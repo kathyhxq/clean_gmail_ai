@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 TOKEN_FILE = "token.json"
 SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
-
+print("ENV CHECK:", os.getenv("GMAIL_CREDENTIALS_JSON") is not None)
 def get_gmail_service():
     """
     Authenticate and return a Gmail API service instance.
